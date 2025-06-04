@@ -1,0 +1,33 @@
+# Use the official Ubuntu 20.04 base image
+FROM ubuntu:20.04
+
+# Update package lists (necessary to install any packages)
+RUN apt update -y
+
+# Create user1 with a home directory and set the default shell to /bin/bash
+RUN useradd -m -s /bin/bash user1
+
+# Create user2 with a home directory and set the default shell to /bin/bash
+RUN useradd -m -s /bin/bash user2
+
+# Create two directories for storing files, one for each user
+# Note: leading slash '/' makes it an absolute path (important)
+RUN mkdir -p /home/ubuntu/folder1 /home/ubuntu/folder2
+
+# Set working directory to folder1 before copying file1
+WORKDIR /home/ubuntu/folder1
+
+# Copy file1 from host machine to folder1 inside the container
+COPY file1 /home/ubuntu/folder1/
+
+# Change working directory to folder2 before copying file2
+WORKDIR /home/ubuntu/folder2
+
+# Copy file2 from host machine to folder2 inside the container
+COPY file2 /home/ubuntu/folder2/
+
+# Set folder1's ownership to user1 so only user1 can modify/access it
+RUN chown -R user1:user1 /home/ubuntu/folder1
+
+# Set folder2's ownership to user2 so only user2 can modify/access it
+RUN chown -R user2:user2 /home/ubuntu/folder2
