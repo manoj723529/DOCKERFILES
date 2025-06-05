@@ -1,6 +1,15 @@
-# Use the official Ubuntu 20.04 base image
-FROM ubuntu:latest
+# -------- Base Image --------
+# Use the official Ubuntu image as the starting point for your Docker container
+FROM ubuntu:latest  # Alternatively, you could use 'ubuntu:20.04' for consistency
 
+# -------- System Update --------
+# Update the list of available packages and their versions
 RUN apt update -y
+
+# -------- Install Java --------
+# Install OpenJDK 17 (Java Development Kit) which is required for building and running Java applications
 RUN apt install openjdk-17-jdk -y
-RUN apt install maven -y
+
+# -------- Install Maven --------
+# Install Apache Maven, a build automation tool used primarily for Java projects
+RUN apt install maven -y
