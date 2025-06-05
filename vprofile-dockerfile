@@ -1,0 +1,41 @@
+# -------- Stage 1: Build Stage --------
+# Use Ubuntu 20.04 as the base image for building the application
+FROM ubuntu:20.04 AS stage-1
+
+# Avoid interactive prompts during package installation (e.g., timezone settings)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update package lists to prepare for installation
+RUN apt update -y
+
+# Install Maven and Git (for building Java projects and cloning repos)
+RUN apt install maven git -y
+
+# Install OpenJDK 11 to compile and run Java code
+RUN apt install openjdk-11-jdk -y
+
+# Clone the Java web application repository from GitHub
+RUN git clone https://github.com/Saiviratvk/vprofile-project.git
+
+# Set working directory to the cloned project directory
+WORKDIR vprofile-project/
+
+# Use Maven to compile the project and package it into a .war file
+RUN mvn package
+
+
+# -------- Stage 2: Deployment Stage --------
+# Use the official Tomcat image with OpenJDK 11 as the runtime environment
+FROM tomcat:9-jdk11
+
+# Copy the WAR file built in the previous stage into Tomcat's webapps directory
+COPY --from=stage-1 vprofile-project/target/*.war /usr/local/tomcat/webapps
+
+# Set permissions so Tomcat can access and serve the WAR file
+RUN chmod -R 755 /usr/local/tomcat/webapps
+
+# Expose port 8080 so the application can be accessed from the host
+EXPOSE 8080
+
+# Start Tomcat in the foreground (keeps the container running)
+CMD ["catalina.sh","run"]
