@@ -31,3 +31,11 @@ RUN chown -R user1:user1 /home/ubuntu/folder1
 
 # Set folder2's ownership to user2 so only user2 can modify/access it
 RUN chown -R user2:user2 /home/ubuntu/folder2
+
+
+
+
+
+this is for container creation
+docker run -d --name my-container my-ubuntu-image tail -f /dev/null
+
